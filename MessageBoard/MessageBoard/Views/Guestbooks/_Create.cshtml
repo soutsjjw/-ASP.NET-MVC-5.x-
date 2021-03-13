@@ -1,0 +1,16 @@
+﻿@model MessageBoard.ViewModels.Guestbooks.Create
+
+<form id="CreateForm" asp-action="Create" method="post">
+    <h3>新增留言</h3>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input type="text" class="form-control" asp-for="Name" autocomplete="false" />
+        <span asp-validation-for="Name" class="text-danger small"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content"></label>
+        <input type="text" class="form-control" asp-for="Content" autocomplete="false" />
+        <span asp-validation-for="Content" class="text-danger small"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">新增留言</button>
+</form>
