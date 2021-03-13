@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MessageBoard.Data.Migrations
 {
     [DbContext(typeof(MessageBoardContext))]
-    [Migration("20210313101825_CreateGuestbookTable")]
+    [Migration("20210313105410_CreateGuestbookTable")]
     partial class CreateGuestbookTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,9 @@ namespace MessageBoard.Data.Migrations
 
             modelBuilder.Entity("MessageBoard.Models.Guestbook", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Content")
                         .IsRequired()

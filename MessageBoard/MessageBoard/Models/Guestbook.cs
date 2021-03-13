@@ -16,7 +16,8 @@ namespace MessageBoard.Models
         /// 編號
         /// </summary>
         [DisplayName("編號")]
-        public int Id { get; set; }
+        [MaxLength(25)]
+        public string Id { get; set; }
         /// <summary>
         /// 名字
         /// </summary>

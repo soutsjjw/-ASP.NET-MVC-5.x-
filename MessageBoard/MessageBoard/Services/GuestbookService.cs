@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MessageBoard.Helpers;
 using MessageBoard.Models;
 using MessageBoard.Repositories.Interface;
 using MessageBoard.Services.Interface;
@@ -32,6 +33,7 @@ namespace MessageBoard.Services
         public void InsertGuestbook(ViewModels.Guestbooks.Create newData)
         {
             var entity = _mapper.Map<Guestbook>(newData);
+            entity.Id = MiscHelper.ShortGuid;
             entity.CreateTime = DateTime.Now;
 
             _guestbookRepository.Insert(entity);

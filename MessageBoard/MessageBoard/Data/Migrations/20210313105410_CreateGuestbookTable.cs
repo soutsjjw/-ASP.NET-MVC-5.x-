@@ -11,8 +11,7 @@ namespace MessageBoard.Data.Migrations
                 name: "Guestbooks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Content = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),

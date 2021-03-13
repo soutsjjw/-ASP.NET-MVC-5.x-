@@ -21,10 +21,9 @@ namespace MessageBoard.Data.Migrations
 
             modelBuilder.Entity("MessageBoard.Models.Guestbook", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Content")
                         .IsRequired()
