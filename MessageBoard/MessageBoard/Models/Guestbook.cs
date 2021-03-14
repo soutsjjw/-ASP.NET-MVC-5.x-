@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MessageBoard.Models
 {
     /// <summary>
     /// 用於儲存留言板資料內容
     /// </summary>
-    public class Guestbook
+    public class Guestbook : BaseModel
     {
-        /// <summary>
-        /// 編號
-        /// </summary>
-        [DisplayName("編號")]
-        [MaxLength(25)]
-        public string Id { get; set; }
         /// <summary>
         /// 名字
         /// </summary>

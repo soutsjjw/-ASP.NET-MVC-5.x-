@@ -1,0 +1,80 @@
+﻿@model MessageBoard.Models.Guestbook
+@{
+    ViewBag.Title = "回覆留言";
+}
+
+<form id="EditForm" asp-action="Reply" method="post">
+
+    <h3>回覆留言</h3>
+
+    @if (Model.ReplyTime.HasValue)
+    {
+        <table class="table">
+            <tr>
+                <td>
+                    <label asp-for="Name"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Name" readonly="@(true)" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="Content"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Content" readonly="@(true)" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="Reply"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Reply" readonly="@(true)" />
+                </td>
+            </tr>
+        </table>
+
+        <b>此留言已回覆無法修改，請</b>@Html.ActionLink("返回列表", "Index")
+    }
+    else
+    {
+        <table class="table">
+            <tr>
+                <td>
+                    <label asp-for="Name"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Name" autocomplete="false" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="Content"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Content" autocomplete="false" />
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="Reply"></label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" asp-for="Reply" autocomplete="false" />
+                    <span asp-validation-for="Reply" class="text-danger small"></span>
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit" class="btn btn-primary btn-sm">回覆留言</button>
+        <a class="btn btn-light btn-sm" asp-action="Index">返回列表</a>
+    }
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

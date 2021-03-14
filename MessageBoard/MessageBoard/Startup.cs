@@ -34,8 +34,10 @@ namespace MessageBoard
         {
             services.AddDbContext<MessageBoardContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                    //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    ;
+                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             #region AutoMapper

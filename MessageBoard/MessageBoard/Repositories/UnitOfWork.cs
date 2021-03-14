@@ -31,7 +31,7 @@ namespace MessageBoard.Repositories
 
             try
             {
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (DbUpdateException ex)
             {

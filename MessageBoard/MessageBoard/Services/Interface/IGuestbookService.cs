@@ -8,8 +8,16 @@ namespace MessageBoard.Services.Interface
 {
     public interface IGuestbookService
     {
-        public List<Guestbook> GetDataList();
+        List<Guestbook> GetDataList();
 
-        public void InsertGuestbook(ViewModels.Guestbooks.Create newData);
+        void InsertGuestbook(Guestbook newData);
+
+        Guestbook GetDataById(string Id);
+
+        void UpdateGuestbook(Guestbook updateData);
+
+        void ReplyGuestbook(Guestbook replyData);
+
+        bool CheckUpdate(string id);
     }
 }
