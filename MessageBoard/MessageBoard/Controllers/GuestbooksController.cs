@@ -70,10 +70,6 @@ namespace MessageBoard.Controllers
         public IActionResult Edit(string id)
         {
             var entity = _GuestbookService.GetDataById(id);
-            if (entity == null)
-            {
-                throw new ArgumentNullException("無法載入此留言板資料");
-            }
 
             return View(entity);
         }
@@ -95,10 +91,6 @@ namespace MessageBoard.Controllers
         public IActionResult Reply(string id)
         {
             var entity = _GuestbookService.GetDataById(id);
-            if (entity == null)
-            {
-                throw new ArgumentNullException("無法載入此留言板資料");
-            }
 
             return View(entity);
         }
@@ -113,6 +105,13 @@ namespace MessageBoard.Controllers
 
                 _GuestbookService.ReplyGuestbook(replyData);
             }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(string id)
+        {
+            _GuestbookService.DeleteGuestbook(id);
 
             return RedirectToAction(nameof(Index));
         }

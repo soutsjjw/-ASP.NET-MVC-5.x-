@@ -19,5 +19,7 @@ namespace MessageBoard.Services.Interface
         void ReplyGuestbook(Guestbook replyData);
 
         bool CheckUpdate(string id);
+
+        void DeleteGuestbook(string Id);
     }
 }

@@ -41,19 +41,22 @@ namespace MessageBoard.Services
 
         public Guestbook GetDataById(string Id)
         {
-            return _guestbookRepository.Get()
+            var entity = _guestbookRepository.Get()
                 .ToList()
                 .Where(x => x.Id == Id)
                 .FirstOrDefault();
+
+            if (entity == null)
+            {
+                throw new ArgumentNullException("無法載入此留言板資料");
+            }
+
+            return entity;
         }
 
         public void UpdateGuestbook(Guestbook updateData)
         {
             var entity = GetDataById(updateData.Id);
-            if (entity == null)
-            {
-                throw new ArgumentNullException("無法載入此留言板資料");
-            }
 
             entity.Name = updateData.Name;
             entity.Content = updateData.Content;
@@ -65,10 +68,6 @@ namespace MessageBoard.Services
         public void ReplyGuestbook(Guestbook replyData)
         {
             var entity = GetDataById(replyData.Id);
-            if (entity == null)
-            {
-                throw new ArgumentNullException("無法載入此留言板資料");
-            }
 
             entity.Reply = replyData.Reply;
             entity.ReplyTime = DateTime.Now;
@@ -77,15 +76,19 @@ namespace MessageBoard.Services
             _unitOfWork.Commit();
         }
 
-        public bool CheckUpdate(string id)
+        public bool CheckUpdate(string Id)
         {
-            var entity = GetDataById(id);
-            if (entity == null)
-            {
-                throw new ArgumentNullException("無法載入此留言板資料");
-            }
+            var entity = GetDataById(Id);
 
             return !entity.ReplyTime.HasValue;
+        }
+
+        public void DeleteGuestbook(string Id)
+        {
+            Guestbook entity = GetDataById(Id);
+
+            _guestbookRepository.Delete(entity);
+            _unitOfWork.Commit();
         }
     }
 }
