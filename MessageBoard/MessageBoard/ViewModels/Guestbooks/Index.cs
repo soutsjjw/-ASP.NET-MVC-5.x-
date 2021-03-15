@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MessageBoard.ViewModels.Guestbooks
 {
     public class Index
     {
-        public List<Guestbook> DataList { get; set; }
+        public IPagedList<Guestbook> DataList { get; set; }
 
         public ViewModels.Guestbooks.Create Create { get; set; }
 

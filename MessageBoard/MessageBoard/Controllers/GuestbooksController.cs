@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
 using MessageBoard.Helpers;
 using MessageBoard.Models;
-using MessageBoard.Services;
 using MessageBoard.Services.Interface;
-using MessageBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using X.PagedList;
 
 namespace MessageBoard.Controllers
 {
@@ -18,21 +14,25 @@ namespace MessageBoard.Controllers
         private readonly ILogger<GuestbooksController> _logger;
         private readonly IMapper _mapper;
         private readonly IGuestbookService _GuestbookService;
+        private readonly IConfigHelper _configHelper;
 
         public GuestbooksController(ILogger<GuestbooksController> logger,
             IMapper mapper,
-            IGuestbookService GuestbookService)
+            IGuestbookService GuestbookService,
+            IConfigHelper configHelper)
         {
             _logger = logger;
             _mapper = mapper;
             _GuestbookService = GuestbookService;
+            _configHelper = configHelper;
         }
 
-        public IActionResult Index(string search)
+        public IActionResult Index(string search, int page = 1)
         {
-            var data = new MessageBoard.ViewModels.Guestbooks.Index();
-            data.DataList = _GuestbookService.GetDataList(search);
+            var data = new ViewModels.Guestbooks.Index();
+            data.DataList = _GuestbookService.GetDataList(search).ToPagedList(page, _configHelper.GetInteger("PageSize", 1));
             data.Create = new ViewModels.Guestbooks.Create();
+            data.Search = search;
 
             return View(data);
         }

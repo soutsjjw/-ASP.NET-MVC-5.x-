@@ -34,10 +34,7 @@ namespace MessageBoard
         {
             services.AddDbContext<MessageBoardContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                    //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    ;
-                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             #region AutoMapper
@@ -59,6 +56,8 @@ namespace MessageBoard
             services.AddScoped<IGuestbookRepository, GuestbookRepository>();
 
             services.AddScoped<IGuestbookService, GuestbookService>();
+
+            services.AddSingleton<IConfigHelper>(new ConfigHelper(Configuration.GetSection("WebConfig")));
 
             #endregion
 
