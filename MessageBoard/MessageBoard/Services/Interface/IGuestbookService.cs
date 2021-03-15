@@ -8,7 +8,7 @@ namespace MessageBoard.Services.Interface
 {
     public interface IGuestbookService
     {
-        List<Guestbook> GetDataList();
+        List<Guestbook> GetDataList(string search = "");
 
         void InsertGuestbook(Guestbook newData);
 

@@ -46,6 +46,11 @@ namespace MessageBoard.Repositories
             }
         }
 
+        public IQueryable<TEntity> GetAll()
+        {
+            return _dbSet;
+        }
+
         public TEntity GetByID(object id)
         {
             return _dbSet.Find(id);

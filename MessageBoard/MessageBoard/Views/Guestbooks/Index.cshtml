@@ -1,4 +1,4 @@
-﻿@model List<Guestbook>
+﻿@model MessageBoard.ViewModels.Guestbooks.Index
 
 @{
     ViewBag.Title = "Index";
@@ -6,11 +6,27 @@
 }
 
 <div id="CreateData">
-    <partial name="_Create" model="new MessageBoard.ViewModels.Guestbooks.Create()" />
+    <partial name="_Create" model="Model.Create" />
 </div>
 
 <h2>留言板</h2>
-@if (Model != null && Model.Any())
+
+<form id="SearchForm" asp-action="Index" method="get">
+    <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-1">
+            <label asp-for="@Model.Search"></label>
+        </div>
+        <div class="col-8">
+            <input type="text" class="form-control" asp-for="@Model.Search" autocomplete="false" />
+        </div>
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary btn-sm">搜尋</button>
+            <button type="submit" class="btn btn-secondary btn-sm" onclick="$('#Search').val('')">清除</button>
+        </div>
+    </div>
+</form>
+
+@if (Model != null && Model.DataList.Any())
 {
     <table class="table table-striped">
         <thead class="thead-light">
@@ -19,25 +35,25 @@
                     #
                 </th>
                 <th scope="col">
-                    @Html.DisplayNameFor(model => model.First().Name)
+                    @Html.DisplayNameFor(model => model.DataList.First().Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.First().CreateTime)
+                    @Html.DisplayNameFor(model => model.DataList.First().CreateTime)
                 </th>
                 <th scope="col">
-                    @Html.DisplayNameFor(model => model.First().Content)
+                    @Html.DisplayNameFor(model => model.DataList.First().Content)
                 </th>
                 <th scope="col">
-                    @Html.DisplayNameFor(model => model.First().Reply)
+                    @Html.DisplayNameFor(model => model.DataList.First().Reply)
                 </th>
                 <th scope="col">
-                    @Html.DisplayNameFor(model => model.First().ReplyTime)
+                    @Html.DisplayNameFor(model => model.DataList.First().ReplyTime)
                 </th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.DataList)
             {
                 rowIndex++;
                 <tr>

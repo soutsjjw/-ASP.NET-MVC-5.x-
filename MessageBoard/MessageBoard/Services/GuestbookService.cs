@@ -25,9 +25,16 @@ namespace MessageBoard.Services
             _guestbookRepository = guestbookRepository;
         }
 
-        public List<Guestbook> GetDataList()
+        public List<Guestbook> GetDataList(string search = "")
         {
-            return _guestbookRepository.Get().ToList();
+            if (string.IsNullOrEmpty(search))
+                return _guestbookRepository.GetAll().ToList();
+            else
+            {
+                return _guestbookRepository
+                    .Get(x => x.Name.Contains(search) || x.Content.Contains(search) || (!string.IsNullOrWhiteSpace(x.Reply) && x.Reply.Contains(search)))
+                    .ToList();
+            }
         }
 
         public void InsertGuestbook(Guestbook newData)

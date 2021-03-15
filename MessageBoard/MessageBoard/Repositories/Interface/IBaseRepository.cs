@@ -21,6 +21,12 @@ namespace MessageBoard.Repositories.Interface
             string includeProperties = "");
 
         /// <summary>
+        /// Gets all entities.
+        /// </summary>
+        /// <returns>The all data.</returns>
+        IQueryable<TEntity> GetAll();
+
+        /// <summary>
         /// Get object from table by id.
         /// </summary>
         /// <param name="id">The object id.</param>

@@ -28,13 +28,13 @@ namespace MessageBoard.Controllers
             _GuestbookService = GuestbookService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
             var data = new MessageBoard.ViewModels.Guestbooks.Index();
-            data.DataList = _GuestbookService.GetDataList();
+            data.DataList = _GuestbookService.GetDataList(search);
             data.Create = new ViewModels.Guestbooks.Create();
 
-            return View(_GuestbookService.GetDataList());
+            return View(data);
         }
 
         [HttpPost]
@@ -57,14 +57,19 @@ namespace MessageBoard.Controllers
                 return Problem("建立留言時發生錯誤");
             }
 
-            var newData = new Guestbook();
-            newData = _mapper.Map<Guestbook>(newData);
+            var newData = _mapper.Map<Guestbook>(model);
 
-            _GuestbookService.InsertGuestbook(newData);
+            try
+            {
+                _GuestbookService.InsertGuestbook(newData);
 
-            NotificationsHelper.AddNotification(new NotificationsHelper.Notification { Message = "留言建立成功" });
-
-            return Ok();
+                NotificationsHelper.AddNotification(new NotificationsHelper.Notification { Message = "留言建立成功" });
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         public IActionResult Edit(string id)
