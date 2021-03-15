@@ -59,6 +59,9 @@ namespace MessageBoard
 
             services.AddSingleton<IConfigHelper>(new ConfigHelper(Configuration.GetSection("WebConfig")));
 
+            Misc.WebConfig webConfig = Configuration.GetSection("WebConfig").Get<Misc.WebConfig>();
+            services.AddSingleton(webConfig);
+
             #endregion
 
             #region Session

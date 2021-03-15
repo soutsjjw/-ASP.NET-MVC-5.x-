@@ -14,23 +14,23 @@ namespace MessageBoard.Controllers
         private readonly ILogger<GuestbooksController> _logger;
         private readonly IMapper _mapper;
         private readonly IGuestbookService _GuestbookService;
-        private readonly IConfigHelper _configHelper;
+        private readonly Misc.WebConfig _config;
 
         public GuestbooksController(ILogger<GuestbooksController> logger,
             IMapper mapper,
             IGuestbookService GuestbookService,
-            IConfigHelper configHelper)
+            Misc.WebConfig config)
         {
             _logger = logger;
             _mapper = mapper;
             _GuestbookService = GuestbookService;
-            _configHelper = configHelper;
+            _config = config;
         }
 
         public IActionResult Index(string search, int page = 1)
         {
             var data = new ViewModels.Guestbooks.Index();
-            data.DataList = _GuestbookService.GetDataList(search).ToPagedList(page, _configHelper.GetInteger("PageSize", 1));
+            data.DataList = _GuestbookService.GetDataList(search).ToPagedList(page, _config.Pagination.PageSize);
             data.Create = new ViewModels.Guestbooks.Create();
             data.Search = search;
 
