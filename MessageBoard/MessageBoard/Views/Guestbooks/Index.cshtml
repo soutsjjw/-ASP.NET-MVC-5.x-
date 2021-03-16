@@ -6,7 +6,6 @@
 
 @{
     ViewBag.Title = "Index";
-    var rowIndex = 0;
 }
 
 <div id="CreateData">
@@ -32,68 +31,9 @@
 
 @if (Model != null && Model.DataList.Any())
 {
-    <table class="table table-striped">
-        <thead class="thead-light">
-            <tr>
-                <th scope="col">
-                    #
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.DataList.First().Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DataList.First().CreateTime)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.DataList.First().Content)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.DataList.First().Reply)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.DataList.First().ReplyTime)
-                </th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DataList)
-            {
-                rowIndex++;
-                <tr>
-                    <th scope="row">@rowIndex</th>
-                    <td>
-                        @item.Name
-                    </td>
-                    <td>
-                        @item.CreateTime
-                    </td>
-                    <td>
-                        @item.Content
-                    </td>
-                    <td>
-                        @item.Reply
-                    </td>
-                    <td>
-                        @item.ReplyTime
-                    </td>
-                    <td>
-                        <a type="button" class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">修改留言</a>
-                        <a type="button" class="btn btn-secondary btn-sm" asp-action="Reply" asp-route-id="@item.Id">回覆留言</a>
-                        <a type="button" class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">刪除留言</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @Html.PagedListPager((IPagedList)Model.DataList, page => Url.Action("Index", new { page, search = Model.Search }), new PagedListRenderOptions
-    {
-        PageClasses = new string[] { "page-link" },
-        UlElementClasses = new string[] { "pagination" },
-        LiElementClasses = new string[] { "page-item" },
-        DisplayPageCountAndCurrentLocation = true,
-        PageCountAndCurrentLocationFormat = _webConfig.Pagination.PageCountAndCurrentLocationFormat
-    })
+    <div id="dataListContainer">
+        <partial name="_DataListPartial" model="Model" />
+    </div>
 }
 else
 {
@@ -124,6 +64,18 @@ else
                     location.reload(true);
                 }
             });
+
+            function interceptPaging() {
+                $("#dataListContainer .pagination a").click(function (event) {
+                    event.preventDefault();
+                    $.get($(this).attr("href"),
+                        function (d) {
+                            $("#dataListContainer").html(d);
+                            interceptPaging();
+                        });
+                });
+            }
+            interceptPaging();
         });
     </script>
     @Html.Raw(MessageBoard.Helpers.NotificationsHelper.RenderNotifications())

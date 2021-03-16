@@ -34,6 +34,12 @@ namespace MessageBoard.Controllers
             data.Create = new ViewModels.Guestbooks.Create();
             data.Search = search;
 
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("_DataListPartial", data);
+            }
+
             return View(data);
         }
 
