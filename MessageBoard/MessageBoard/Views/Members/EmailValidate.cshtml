@@ -1,0 +1,10 @@
+﻿@{
+    ViewBag.Title = "Email驗證";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.Raw(MessageBoard.Helpers.StatusMessageHelper.RenderMessage())
+
+<a class="btn btn-primary btn-sm" asp-action="Login">去登入</a>
+<a class="btn btn-light btn-sm" asp-action="Login">再註冊</a>

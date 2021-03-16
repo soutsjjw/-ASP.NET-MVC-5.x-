@@ -1,0 +1,49 @@
+﻿@model MessageBoard.ViewModels.Members.Register
+@{
+    ViewBag.Title = "註冊";
+}
+
+<h2>註冊</h2>
+
+<form id="RegisterForm" asp-action="Register" method="post">
+    <div class="form-group">
+        <label asp-for="newMember.Account"></label>
+        <input type="text" class="form-control" asp-for="newMember.Account" autocomplete="false" />
+        <span asp-validation-for="newMember.Account" class="text-danger small"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input type="password" class="form-control" asp-for="Password" autocomplete="false" />
+        <span asp-validation-for="Password" class="text-danger small"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordCheck"></label>
+        <input type="password" class="form-control" asp-for="PasswordCheck" autocomplete="false" />
+        <span asp-validation-for="PasswordCheck" class="text-danger small"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="newMember.Name"></label>
+        <input type="text" class="form-control" asp-for="newMember.Name" autocomplete="false" />
+        <span asp-validation-for="newMember.Name" class="text-danger small"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="newMember.Email"></label>
+        <input type="email" class="form-control" asp-for="newMember.Email" autocomplete="false" />
+        <span asp-validation-for="newMember.Email" class="text-danger small"></span>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">註冊</button>
+    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+</form>
+
+@section Style {
+    <style type="text/css">
+        form {
+            margin: 0 auto;
+            width: 560px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MessageBoard.Models
 {
@@ -10,12 +11,13 @@ namespace MessageBoard.Models
     public class Guestbook : BaseModel
     {
         /// <summary>
-        /// 名字
+        /// 帳號
         /// </summary>
-        [DisplayName("名字")]
-        [Required(ErrorMessage = "請輸入名字")]
-        [StringLength(20, ErrorMessage = "名字不可超過20字元")]
-        public string Name { get; set; }
+        [DisplayName("帳號")]
+        [Required(ErrorMessage = "請輸入帳號")]
+        [StringLength(30, ErrorMessage = "帳號不可超過30字元")]
+        [Column(TypeName = "varchar(30)")]
+        public string Account { get; set; }
         /// <summary>
         /// 留言內容
         /// </summary>

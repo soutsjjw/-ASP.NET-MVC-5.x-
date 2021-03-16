@@ -1,4 +1,5 @@
-﻿using MessageBoard.Models;
+﻿using MessageBoard.Data.Configurations;
+using MessageBoard.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,12 @@ namespace MessageBoard.Data
         }
 
         public DbSet<Guestbook> Guestbooks { get; set; }
+        public DbSet<Member> Members { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfiguration).Assembly);
+
             base.OnModelCreating(modelBuilder);
         }
 

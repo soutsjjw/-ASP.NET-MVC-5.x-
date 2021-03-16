@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,8 +56,11 @@ namespace MessageBoard
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGuestbookRepository, GuestbookRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
 
             services.AddScoped<IGuestbookService, GuestbookService>();
+            services.AddScoped<IMemberService, MemberService>();
+            services.AddScoped<IMailService, MailService>();
 
             services.AddSingleton<IConfigHelper>(new ConfigHelper(Configuration.GetSection("WebConfig")));
 
@@ -73,6 +78,28 @@ namespace MessageBoard
                 options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+            });
+
+            #endregion
+
+            #region MailKit
+
+            services.AddMailKit(optionBuilder =>
+            {
+                optionBuilder.UseMailKit(new MailKitOptions()
+                {
+                    //get options from secrets.json
+                    Server = webConfig.MailServer.Server,
+                    Port = Convert.ToInt32(webConfig.MailServer.Port),
+                    SenderName = webConfig.MailServer.SenderName,
+                    SenderEmail = webConfig.MailServer.SenderEmail,
+
+                    // can be optional with no authentication 
+                    Account = webConfig.MailServer.Account,
+                    Password = webConfig.MailServer.Password,
+                    // enable ssl or tls
+                    Security = true
+                });
             });
 
             #endregion
