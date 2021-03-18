@@ -68,5 +68,14 @@ namespace MessageBoard.Services.Interface
         /// <param name="Account"></param>
         /// <returns></returns>
         public string GetRole(string Account);
+
+        /// <summary>
+        /// 變更會員密碼，並回傳最後訊息
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public bool ChangePassword(string accountId, string password, string newPassword, out string message);
     }
 }

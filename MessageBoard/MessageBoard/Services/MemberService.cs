@@ -148,5 +148,35 @@ namespace MessageBoard.Services
             }
             return role;
         }
+
+        public bool ChangePassword(string accountId, string password, string newPassword, out string message)
+        {
+            bool blPass = false;
+            Member loginMemger = GetDataById(accountId);
+            if (PasswordCheck(loginMemger, password))
+            {
+                loginMemger.Password = HashPassword(newPassword);
+
+                try
+                {
+                    _memberRepository.Update(loginMemger);
+                    _unitOfWork.Commit();
+
+                    blPass = true;
+                }
+                catch(Exception ex)
+                {
+                    message = ex.Message;
+                }
+
+                message = "密碼修改成功";
+            }
+            else
+            {
+                message = "舊密碼輸入錯誤";
+            }
+
+            return blPass;
+        }
     }
 }

@@ -145,5 +145,26 @@ namespace MessageBoard.Controllers
 
             return RedirectToAction(nameof(Login));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangePassword(ViewModels.Members.ChangePassword changeData)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _memberService.ChangePassword(this.UserId, changeData.Password, changeData.NewPassword, out string message);
+
+                StatusMessageHelper.AddMessage(message: message, contentType: result ? StatusMessageHelper.ContentType.Success : StatusMessageHelper.ContentType.Warning);
+            }
+
+            return View();
+        }
     }
 }
