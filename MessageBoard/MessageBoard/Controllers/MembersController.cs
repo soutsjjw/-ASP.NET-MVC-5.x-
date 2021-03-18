@@ -91,12 +91,34 @@ namespace MessageBoard.Controllers
             return Json(_MemberService.AccountCheck(registerMember.newMember.Account));
         }
 
-        public IActionResult EmailValidate(string Account, string AuthCode)
+        public IActionResult EmailValidate(string account, string authCode)
         {
-            var blPass = _MemberService.EmailValidate(Account, AuthCode, out string message);
+            var blPass = _MemberService.EmailValidate(account, authCode, out string message);
             StatusMessageHelper.AddMessage(message: message, contentType: blPass ? StatusMessageHelper.ContentType.Success : StatusMessageHelper.ContentType.Danger);
 
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Guestbooks");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(ViewModels.Members.Login loginMember)
+        {
+            string validateStr = _MemberService.LoginCheck(loginMember.Account, loginMember.Password);
+            if (string.IsNullOrWhiteSpace(validateStr))
+            {
+                return RedirectToAction("Index", "Guestbooks");
+            }
+            else
+            {
+                ModelState.AddModelError("", validateStr);
+                return View(loginMember);
+            }
         }
     }
 }

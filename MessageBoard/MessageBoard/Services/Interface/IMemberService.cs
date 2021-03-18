@@ -38,5 +38,28 @@ namespace MessageBoard.Services.Interface
         /// <param name="AuthCode"></param>
         /// <returns></returns>
         public bool EmailValidate(string Account, string AuthCode, out string message);
+
+        /// <summary>
+        /// 登入帳號確認，並回傳驗證後訊息
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <param name="Password"></param>
+        /// <returns></returns>
+        public string LoginCheck(string Account, string Password);
+
+        /// <summary>
+        /// 進行密碼確認
+        /// </summary>
+        /// <param name="CheckMember"></param>
+        /// <param name="Password"></param>
+        /// <returns></returns>
+        public bool PasswordCheck(Member CheckMember, string Password);
+
+        /// <summary>
+        /// 取得會員的權限角色資料
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <returns></returns>
+        public string GetRole(string Account);
     }
 }

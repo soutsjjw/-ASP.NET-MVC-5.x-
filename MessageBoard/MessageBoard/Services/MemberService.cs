@@ -101,5 +101,47 @@ namespace MessageBoard.Services
 
             return blPass;
         }
+
+        public string LoginCheck(string Account, string Password)
+        {
+            Member loginMember = GetDataByAccount(Account);
+
+            if (loginMember == null)
+            {
+                return "無此會員帳號或密碼錯誤，若您要加入會員請按「去註冊」。";
+            }
+            else
+            {
+                if (PasswordCheck(loginMember, Password))
+                {
+                    if (string.IsNullOrWhiteSpace(loginMember.AuthCode))
+                    {
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return "此帳號尚未經過Email驗證，請去收信";
+                    }
+                }
+                else
+                    return "無此會員帳號或密碼錯誤，若您要加入會員請按「註冊」。";
+            }
+        }
+
+        public bool PasswordCheck(Member CheckMember, string Password)
+        {
+            return CheckMember.Password.Equals(HashPassword(Password));
+        }
+
+        public string GetRole(string Account)
+        {
+            string role = "User";
+            Member loginMember = GetDataByAccount(Account);
+            if (loginMember.IsAdmin)
+            {
+                role += ",Admin";
+            }
+            return role;
+        }
     }
 }
