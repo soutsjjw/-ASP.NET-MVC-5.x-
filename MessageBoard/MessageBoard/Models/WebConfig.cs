@@ -1,4 +1,4 @@
-﻿namespace MessageBoard.Misc
+﻿namespace MessageBoard.Models
 {
     public class WebConfig
     {
@@ -6,10 +6,12 @@
         {
             Pagination = new PaginationContent();
             MailServer = new MailServerContent();
+            Jwt = new JwtContent();
         }
 
         public PaginationContent Pagination { get; set; }
         public MailServerContent MailServer { get; set; }
+        public JwtContent Jwt { get; set; }
 
         public class PaginationContent
         {
@@ -25,6 +27,13 @@
             public string SenderEmail { get; set; }
             public string Account { get; set; }
             public string Password { get; set; }
+        }
+
+        public class JwtContent
+        {
+            public string SecretKey { get; set; }
+            public int ExpireMinutes { get; set; }
+            public string CookieName { get; set; }
         }
     }
 }

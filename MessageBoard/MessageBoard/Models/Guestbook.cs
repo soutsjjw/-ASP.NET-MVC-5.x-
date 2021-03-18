@@ -41,5 +41,7 @@ namespace MessageBoard.Models
         /// </summary>
         [DisplayName("回覆時間")]
         public DateTime? ReplyTime { get; set; }
+
+        public Member Member { get; set; }
     }
 }

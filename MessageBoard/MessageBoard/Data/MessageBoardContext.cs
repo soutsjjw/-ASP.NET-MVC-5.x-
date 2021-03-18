@@ -23,6 +23,11 @@ namespace MessageBoard.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfiguration).Assembly);
 
+            modelBuilder.Entity<Member>()
+                .HasMany(c => c.Guestbooks)
+                .WithOne(e => e.Member)
+                .IsRequired();
+
             base.OnModelCreating(modelBuilder);
         }
 

@@ -1,5 +1,8 @@
 ﻿using MessageBoard.Helpers;
 using MessageBoard.Services.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,14 +13,20 @@ namespace MessageBoard.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly IMemberService _MemberService;
-        private readonly IMailService _MailService;
+        private readonly Models.WebConfig _webConfig;
+        private readonly IMemberService _memberService;
+        private readonly IMailService _mailService;
+        private readonly IJwtService _jwtService;
 
-        public MembersController(IMemberService MemberService,
-            IMailService MailService)
+        public MembersController(Models.WebConfig webConfig,
+            IMemberService MemberService,
+            IMailService MailService,
+            IJwtService JwtService)
         {
-            _MemberService = MemberService;
-            _MailService = MailService;
+            _webConfig = webConfig;
+            _memberService = MemberService;
+            _mailService = MailService;
+            _jwtService = JwtService;
         }
 
         public IActionResult Index()
@@ -38,12 +47,12 @@ namespace MessageBoard.Controllers
             if (ModelState.IsValid)
             {
                 registerMember.newMember.Password = registerMember.Password;
-                var authCode = _MailService.GetValidateCode();
+                var authCode = _mailService.GetValidateCode();
                 registerMember.newMember.AuthCode = authCode;
 
                 try
                 {
-                    _MemberService.Register(registerMember.newMember);
+                    _memberService.Register(registerMember.newMember);
                 }
                 catch(Exception ex)
                 {
@@ -65,10 +74,10 @@ namespace MessageBoard.Controllers
                         AuthCode= authCode
                     })
                 };
-                string mailBody = _MailService.GetRegiesterMailBody(tempMail,
+                string mailBody = _mailService.GetRegiesterMailBody(tempMail,
                     registerMember.newMember.Name,
                     validateUrl.ToString().Replace("%3F", "?"));
-                await _MailService.SendRegisterMailAsync(mailBody, registerMember.newMember.Email);
+                await _mailService.SendRegisterMailAsync(mailBody, registerMember.newMember.Email);
 
                 StatusMessageHelper.AddMessage(message: "註冊成功，請去收信進行Email驗證");
 
@@ -88,12 +97,12 @@ namespace MessageBoard.Controllers
 
         public IActionResult AccountCheck(ViewModels.Members.Register registerMember)
         {
-            return Json(_MemberService.AccountCheck(registerMember.newMember.Account));
+            return Json(_memberService.AccountCheck(registerMember.newMember.Account));
         }
 
         public IActionResult EmailValidate(string account, string authCode)
         {
-            var blPass = _MemberService.EmailValidate(account, authCode, out string message);
+            var blPass = _memberService.EmailValidate(account, authCode, out string message);
             StatusMessageHelper.AddMessage(message: message, contentType: blPass ? StatusMessageHelper.ContentType.Success : StatusMessageHelper.ContentType.Danger);
 
             return View();
@@ -109,9 +118,16 @@ namespace MessageBoard.Controllers
         [HttpPost]
         public IActionResult Login(ViewModels.Members.Login loginMember)
         {
-            string validateStr = _MemberService.LoginCheck(loginMember.Account, loginMember.Password);
+            string validateStr = _memberService.LoginCheck(loginMember.Account, loginMember.Password);
             if (string.IsNullOrWhiteSpace(validateStr))
             {
+                string roleData = _memberService.GetRole(loginMember.Account);
+                var token = _jwtService.GenerateToken(loginMember.Account, roleData);
+
+                Response.Cookies.Append(_webConfig.Jwt.CookieName, token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+                //Response.Cookies.Append("X-Username", loginMember.Account, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+                //Response.Cookies.Append("X-Refresh-Token", Guid.NewGuid().ToString(), new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+
                 return RedirectToAction("Index", "Guestbooks");
             }
             else
@@ -119,6 +135,14 @@ namespace MessageBoard.Controllers
                 ModelState.AddModelError("", validateStr);
                 return View(loginMember);
             }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(_webConfig.Jwt.CookieName);
+
+            return RedirectToAction(nameof(Login));
         }
     }
 }

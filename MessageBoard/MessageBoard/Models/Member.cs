@@ -49,5 +49,7 @@ namespace MessageBoard.Models
         /// 是否為管理員
         /// </summary>
         public bool IsAdmin { get; set; }
+
+        public ICollection<Guestbook> Guestbooks { get; set; }
     }
 }

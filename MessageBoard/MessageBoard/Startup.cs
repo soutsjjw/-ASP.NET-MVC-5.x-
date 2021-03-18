@@ -5,6 +5,8 @@ using MessageBoard.Repositories;
 using MessageBoard.Repositories.Interface;
 using MessageBoard.Services;
 using MessageBoard.Services.Interface;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +15,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MessageBoard
@@ -61,10 +66,11 @@ namespace MessageBoard
             services.AddScoped<IGuestbookService, GuestbookService>();
             services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddSingleton<IConfigHelper>(new ConfigHelper(Configuration.GetSection("WebConfig")));
 
-            Misc.WebConfig webConfig = Configuration.GetSection("WebConfig").Get<Misc.WebConfig>();
+            Models.WebConfig webConfig = Configuration.GetSection("WebConfig").Get<Models.WebConfig>();
             services.AddSingleton(webConfig);
 
             #endregion
@@ -104,6 +110,37 @@ namespace MessageBoard
 
             #endregion
 
+            #region JWT
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(webConfig.Jwt.SecretKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies[webConfig.Jwt.CookieName];
+                        return Task.CompletedTask;
+                    },
+                };
+            });
+
+            #endregion
+
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
         }
@@ -119,6 +156,19 @@ namespace MessageBoard
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseStatusCodePages(async context => {
+                var request = context.HttpContext.Request;
+                var response = context.HttpContext.Response;
+
+                if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                // you may also check requests path to do this only for specific methods       
+                // && request.Path.Value.StartsWith("/specificPath")
+                {
+                    response.Redirect("/Members/Login");
+                }
+            });
+
             app.UseStaticFiles();
 
             app.UseStaticHttpContextAccessor();
@@ -126,6 +176,7 @@ namespace MessageBoard
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

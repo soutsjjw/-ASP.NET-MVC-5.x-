@@ -9,10 +9,10 @@ namespace MessageBoard.Services
 {
     public class MailService : IMailService
     {
-        private readonly Misc.WebConfig _config;
+        private readonly Models.WebConfig _config;
         private readonly IEmailService _emailService;
 
-        public MailService(Misc.WebConfig config,
+        public MailService(Models.WebConfig config,
             IEmailService emailService)
         {
             _config = config;

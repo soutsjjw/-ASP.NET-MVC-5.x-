@@ -2,6 +2,8 @@
 using MessageBoard.Helpers;
 using MessageBoard.Models;
 using MessageBoard.Services.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,17 +11,18 @@ using X.PagedList;
 
 namespace MessageBoard.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GuestbooksController : Controller
     {
         private readonly ILogger<GuestbooksController> _logger;
         private readonly IMapper _mapper;
         private readonly IGuestbookService _GuestbookService;
-        private readonly Misc.WebConfig _config;
+        private readonly Models.WebConfig _config;
 
         public GuestbooksController(ILogger<GuestbooksController> logger,
             IMapper mapper,
             IGuestbookService GuestbookService,
-            Misc.WebConfig config)
+            Models.WebConfig config)
         {
             _logger = logger;
             _mapper = mapper;
