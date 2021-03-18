@@ -23,9 +23,15 @@ namespace MessageBoard.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfiguration).Assembly);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(c => c.Guestbooks)
-                .WithOne(e => e.Member)
+            //modelBuilder.Entity<Member>()
+            //    .HasMany(c => c.Guestbooks)
+            //    .WithOne(e => e.Member)
+            //    .IsRequired();
+
+            modelBuilder.Entity<Guestbook>()
+                .HasOne<Member>(x => x.Member)
+                .WithMany(x => x.Guestbooks)
+                .HasForeignKey(x => x.MemberId)
                 .IsRequired();
 
             base.OnModelCreating(modelBuilder);

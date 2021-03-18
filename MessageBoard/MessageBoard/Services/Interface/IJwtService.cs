@@ -13,6 +13,6 @@ namespace MessageBoard.Services.Interface
         /// <param name="account"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public string GenerateToken(string account, string role);
+        public string GenerateToken(string accountId, string account, string role);
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MessageBoard.Controllers
 {
-    public class MembersController : Controller
+    public class MembersController : BaseController
     {
         private readonly Models.WebConfig _webConfig;
         private readonly IMemberService _memberService;
@@ -121,8 +121,9 @@ namespace MessageBoard.Controllers
             string validateStr = _memberService.LoginCheck(loginMember.Account, loginMember.Password);
             if (string.IsNullOrWhiteSpace(validateStr))
             {
+                var member = _memberService.GetDataByAccount(loginMember.Account);
                 string roleData = _memberService.GetRole(loginMember.Account);
-                var token = _jwtService.GenerateToken(loginMember.Account, roleData);
+                var token = _jwtService.GenerateToken(member.Id, member.Name, roleData);
 
                 Response.Cookies.Append(_webConfig.Jwt.CookieName, token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
                 //Response.Cookies.Append("X-Username", loginMember.Account, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });

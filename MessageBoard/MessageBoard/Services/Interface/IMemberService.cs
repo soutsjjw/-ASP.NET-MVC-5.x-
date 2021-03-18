@@ -25,6 +25,13 @@ namespace MessageBoard.Services.Interface
         public Member GetDataByAccount(string Account);
 
         /// <summary>
+        /// 藉由Id取得單筆資料
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <returns></returns>
+        public Member GetDataById(string Id);
+
+        /// <summary>
         /// 確認要註冊帳號是否有被註冊過
         /// </summary>
         /// <param name="Account"></param>

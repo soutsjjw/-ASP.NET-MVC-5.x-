@@ -9,8 +9,6 @@ namespace MessageBoard.ViewModels.Guestbooks
         /// 名字
         /// </summary>
         [DisplayName("名字")]
-        [Required(ErrorMessage = "請輸入名字")]
-        [StringLength(20, ErrorMessage = "名字不可超過20字元")]
         public string Name { get; set; }
         /// <summary>
         /// 留言內容

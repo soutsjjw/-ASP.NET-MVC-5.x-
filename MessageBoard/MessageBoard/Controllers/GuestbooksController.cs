@@ -12,21 +12,24 @@ using X.PagedList;
 namespace MessageBoard.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class GuestbooksController : Controller
+    public class GuestbooksController : BaseController
     {
         private readonly ILogger<GuestbooksController> _logger;
         private readonly IMapper _mapper;
         private readonly IGuestbookService _GuestbookService;
+        private readonly IMemberService _memberService;
         private readonly Models.WebConfig _config;
 
         public GuestbooksController(ILogger<GuestbooksController> logger,
             IMapper mapper,
             IGuestbookService GuestbookService,
+            IMemberService memberService,
             Models.WebConfig config)
         {
             _logger = logger;
             _mapper = mapper;
             _GuestbookService = GuestbookService;
+            _memberService = memberService;
             _config = config;
         }
 
@@ -34,8 +37,10 @@ namespace MessageBoard.Controllers
         {
             var data = new ViewModels.Guestbooks.Index();
             data.DataList = _GuestbookService.GetDataList(search).ToPagedList(page, _config.Pagination.PageSize);
-            data.Create = new ViewModels.Guestbooks.Create();
+            data.Create = new ViewModels.Guestbooks.Create() { Name = this.UserName };
             data.Search = search;
+
+            ViewBag.UserId = this.UserId;
 
             var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             if (isAjax)
@@ -70,6 +75,13 @@ namespace MessageBoard.Controllers
 
             try
             {
+                var member = _memberService.GetDataById(this.UserId);
+                if (member == null)
+                {
+                    throw new Exception("使用者資料錯誤，請重新登入！");
+                }
+
+                newData.MemberId = this.UserId;
                 _GuestbookService.InsertGuestbook(newData);
 
                 NotificationsHelper.AddNotification(new NotificationsHelper.Notification { Message = "留言建立成功" });
@@ -84,6 +96,12 @@ namespace MessageBoard.Controllers
         public IActionResult Edit(string id)
         {
             var entity = _GuestbookService.GetDataById(id);
+
+            if (entity.MemberId != this.UserId)
+            {
+                StatusMessageHelper.AddMessage(message: "您無法修改此留言！", contentType: StatusMessageHelper.ContentType.Danger);
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(entity);
         }
@@ -125,6 +143,14 @@ namespace MessageBoard.Controllers
 
         public IActionResult Delete(string id)
         {
+            var entity = _GuestbookService.GetDataById(id);
+
+            if (entity.MemberId != this.UserId)
+            {
+                StatusMessageHelper.AddMessage(message: "您無法刪除此留言！", contentType: StatusMessageHelper.ContentType.Danger);
+                return RedirectToAction(nameof(Index));
+            }
+
             _GuestbookService.DeleteGuestbook(id);
 
             return RedirectToAction(nameof(Index));

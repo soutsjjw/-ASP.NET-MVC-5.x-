@@ -11,14 +11,6 @@ namespace MessageBoard.Models
     public class Guestbook : BaseModel
     {
         /// <summary>
-        /// 帳號
-        /// </summary>
-        [DisplayName("帳號")]
-        [Required(ErrorMessage = "請輸入帳號")]
-        [StringLength(30, ErrorMessage = "帳號不可超過30字元")]
-        [Column(TypeName = "varchar(30)")]
-        public string Account { get; set; }
-        /// <summary>
         /// 留言內容
         /// </summary>
         [DisplayName("留言內容")]
@@ -42,6 +34,8 @@ namespace MessageBoard.Models
         [DisplayName("回覆時間")]
         public DateTime? ReplyTime { get; set; }
 
+        [ForeignKey("Member")]
+        public string MemberId { get; set; }
         public Member Member { get; set; }
     }
 }

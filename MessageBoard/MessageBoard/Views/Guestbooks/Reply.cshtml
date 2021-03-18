@@ -12,10 +12,10 @@
         <table class="table">
             <tr>
                 <td>
-                    <label asp-for="Account"></label>
+                    <label asp-for="@Model.Member.Name"></label>
                 </td>
                 <td>
-                    <input type="text" class="form-control" asp-for="Account" readonly="@(true)" />
+                    <input type="text" class="form-control" asp-for="@Model.Member.Name" readonly="@(true)" />
                 </td>
             </tr>
             <tr>
@@ -43,11 +43,10 @@
         <table class="table">
             <tr>
                 <td>
-                    <label asp-for="Account"></label>
+                    <label asp-for="@Model.Member.Name"></label>
                 </td>
                 <td>
-                    <input type="text" class="form-control" asp-for="Account" autocomplete="false" />
-                    <span asp-validation-for="Account" class="text-danger small"></span>
+                    <input type="text" class="form-control" asp-for="@Model.Member.Name" readonly="@(true)" />
                 </td>
             </tr>
             <tr>

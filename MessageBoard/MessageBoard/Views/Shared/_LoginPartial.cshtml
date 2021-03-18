@@ -1,0 +1,11 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Logout">Hello @(User.Identity.Name)! 登出</a>
+    </li>
+}
+else
+{
+    <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Login">登入</a>
+    <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Register">註冊</a>
+}

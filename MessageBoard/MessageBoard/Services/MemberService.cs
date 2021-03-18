@@ -65,6 +65,11 @@ namespace MessageBoard.Services
             return _memberRepository.Get(x => x.Account.Equals(Account)).FirstOrDefault();
         }
 
+        public Member GetDataById(string Id)
+        {
+            return _memberRepository.Get(x => x.Id.Equals(Id)).FirstOrDefault();
+        }
+
         public bool AccountCheck(string Account)
         {
             return GetDataByAccount(Account) == null;

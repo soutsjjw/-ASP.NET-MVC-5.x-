@@ -19,7 +19,7 @@ namespace MessageBoard.Services
             _webConfig = webConfig;
         }
 
-        public string GenerateToken(string account, string role)
+        public string GenerateToken(string accountId, string account, string role)
         {
             var now = DateTime.UtcNow;
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -27,8 +27,9 @@ namespace MessageBoard.Services
             var tokenDiscriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.Email, account),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Name, account),
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.NameIdentifier, accountId)
                 }),
                 Expires = now.AddMinutes(4),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)

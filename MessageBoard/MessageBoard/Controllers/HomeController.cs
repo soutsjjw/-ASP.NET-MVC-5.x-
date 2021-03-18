@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MessageBoard.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -21,6 +21,8 @@ namespace MessageBoard.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.UserName = UserName;
+
             return View();
         }
 
