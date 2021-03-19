@@ -1,4 +1,6 @@
 ﻿using MessageBoard.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace MessageBoard.Services.Interface
 {
@@ -8,14 +10,8 @@ namespace MessageBoard.Services.Interface
         /// 註冊新會員
         /// </summary>
         /// <param name="newMember"></param>
-        public void Register(Member newMember);
-
-        /// <summary>
-        /// Hash密碼用
-        /// </summary>
-        /// <param name="Password"></param>
-        /// <returns></returns>
-        public string HashPassword(string Password);
+        /// <param name="password"></param>
+        public Task<IdentityResult> RegisterAsync(Member newMember, string password);
 
         /// <summary>
         /// 藉由帳號取得單筆資料
@@ -36,7 +32,7 @@ namespace MessageBoard.Services.Interface
         /// </summary>
         /// <param name="Account"></param>
         /// <returns></returns>
-        public bool AccountCheck(string Account);
+        public Task<bool> AccountCheckAsync(string Account);
 
         /// <summary>
         /// 信箱驗證碼驗證
@@ -44,7 +40,8 @@ namespace MessageBoard.Services.Interface
         /// <param name="Account"></param>
         /// <param name="AuthCode"></param>
         /// <returns></returns>
-        public bool EmailValidate(string Account, string AuthCode, out string message);
+        // public bool EmailValidateAsync(string Account, string AuthCode, out string message);
+        public bool EmailValidate(string account, string authCode, out string message);
 
         /// <summary>
         /// 登入帳號確認，並回傳驗證後訊息
@@ -52,15 +49,7 @@ namespace MessageBoard.Services.Interface
         /// <param name="Account"></param>
         /// <param name="Password"></param>
         /// <returns></returns>
-        public string LoginCheck(string Account, string Password);
-
-        /// <summary>
-        /// 進行密碼確認
-        /// </summary>
-        /// <param name="CheckMember"></param>
-        /// <param name="Password"></param>
-        /// <returns></returns>
-        public bool PasswordCheck(Member CheckMember, string Password);
+        public Task<string> LoginCheckAsync(string Account, string Password);
 
         /// <summary>
         /// 取得會員的權限角色資料
@@ -72,10 +61,10 @@ namespace MessageBoard.Services.Interface
         /// <summary>
         /// 變更會員密碼，並回傳最後訊息
         /// </summary>
-        /// <param name="account"></param>
+        /// <param name="applicationUser"></param>
         /// <param name="password"></param>
         /// <param name="newPassword"></param>
         /// <returns></returns>
-        public bool ChangePassword(string accountId, string password, string newPassword, out string message);
+        public bool ChangePassword(ApplicationUser applicationUser, string password, string newPassword, out string message);
     }
 }

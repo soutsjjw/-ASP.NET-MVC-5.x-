@@ -1,6 +1,8 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MessageBoard.Data;
 using MessageBoard.Helpers;
+using MessageBoard.Middlewares;
+using MessageBoard.Models;
 using MessageBoard.Repositories;
 using MessageBoard.Repositories.Interface;
 using MessageBoard.Services;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,10 +42,20 @@ namespace MessageBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             services.AddDbContext<MessageBoardContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddErrorDescriber<CustomIdentityErrorDescriber>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             #region AutoMapper
 
@@ -110,8 +123,21 @@ namespace MessageBoard
 
             #endregion
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Members/Login";
+                // options.AccessDeniedPath = "/Account/AccessDenied";
+                // SlidingExpiration設置為true，以指示處理程序在處理超過到期窗口一半的請求時，每次處理程序以新的到期時間重新發出新的cookie。
+                options.SlidingExpiration = true;
+            });
+
             #region JWT
 
+            /*
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -138,6 +164,7 @@ namespace MessageBoard
                     },
                 };
             });
+            */
 
             #endregion
 
@@ -157,17 +184,21 @@ namespace MessageBoard
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStatusCodePages(async context => {
+            /*
+            app.UseStatusCodePages(context =>
+            {
                 var request = context.HttpContext.Request;
                 var response = context.HttpContext.Response;
 
                 if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
-                // you may also check requests path to do this only for specific methods       
-                // && request.Path.Value.StartsWith("/specificPath")
+                // you may also check requests path to do this only for specific methods && request.Path.Value.StartsWith("/specificPath")
                 {
                     response.Redirect("/Members/Login");
                 }
+
+                return Task.CompletedTask;
             });
+            */
 
             app.UseStaticFiles();
 
