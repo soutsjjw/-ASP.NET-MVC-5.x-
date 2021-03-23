@@ -25,6 +25,7 @@ namespace MessageBoard.Repositories
             {
                 query = query.Where(filter);
             }
+            query = query.Where(x => !x.IsDelete);
 
             foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -43,7 +44,7 @@ namespace MessageBoard.Repositories
 
         public override IQueryable<Guestbook> GetAll()
         {
-            return _dbSet.Include(x => x.Creator).Include(x => x.Updater).Include(x => x.Replier);
+            return _dbSet.Where(x => !x.IsDelete).Include(x => x.Creator).Include(x => x.Updater).Include(x => x.Replier);
         }
     }
 }

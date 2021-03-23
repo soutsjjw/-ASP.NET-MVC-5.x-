@@ -32,6 +32,10 @@ namespace MessageBoard.Data.Configurations
             builder.HasOne(p => p.Replier)
                 .WithMany()
                 .HasForeignKey(p => p.ReplierId);
+
+            builder.Property(e => e.IsDelete)
+                .IsRequired()
+                .HasDefaultValueSql("(0)");
         }
     }
 }

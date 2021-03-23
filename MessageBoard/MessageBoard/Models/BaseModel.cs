@@ -30,5 +30,7 @@ namespace MessageBoard.Models
         /// </summary>
         [DisplayName("新增時間")]
         public DateTime? UpdateTime { get; set; }
+
+        public bool IsDelete { get; set; }
     }
 }

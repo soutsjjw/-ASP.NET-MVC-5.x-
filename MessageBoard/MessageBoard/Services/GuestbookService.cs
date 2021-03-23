@@ -92,11 +92,15 @@ namespace MessageBoard.Services
             return !entity.ReplyTime.HasValue;
         }
 
-        public void DeleteGuestbook(string Id)
+        public void DeleteGuestbook(string Id, string userId)
         {
             Guestbook entity = GetDataById(Id);
 
-            _guestbookRepository.Delete(entity);
+            entity.UpdaterId = userId;
+            entity.UpdateTime = DateTime.Now;
+            entity.IsDelete = true;
+
+            _guestbookRepository.Update(entity);
             _unitOfWork.Commit();
         }
     }

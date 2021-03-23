@@ -152,7 +152,7 @@ namespace MessageBoard.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            _GuestbookService.DeleteGuestbook(id);
+            _GuestbookService.DeleteGuestbook(id, this.UserId);
 
             return RedirectToAction(nameof(Index));
         }

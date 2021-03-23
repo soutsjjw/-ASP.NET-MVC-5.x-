@@ -20,6 +20,6 @@ namespace MessageBoard.Services.Interface
 
         bool CheckUpdate(string id);
 
-        void DeleteGuestbook(string Id);
+        void DeleteGuestbook(string Id, string userId);
     }
 }
