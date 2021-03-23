@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MessageBoard.Data.Migrations
 {
     [DbContext(typeof(MessageBoardContext))]
-    [Migration("20210318070751_MemberWithGuestbookRelationship")]
-    partial class MemberWithGuestbookRelationship
+    [Migration("20210322161824_CreateGuestBookTable")]
+    partial class CreateGuestBookTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,11 +27,6 @@ namespace MessageBoard.Data.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.Property<string>("Account")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -40,9 +35,8 @@ namespace MessageBoard.Data.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)");
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Reply")
                         .HasMaxLength(100)
@@ -51,64 +45,56 @@ namespace MessageBoard.Data.Migrations
                     b.Property<DateTime?>("ReplyTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdaterId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("UpdaterId");
 
                     b.ToTable("Guestbooks");
                 });
 
-            modelBuilder.Entity("MessageBoard.Models.Member", b =>
+            modelBuilder.Entity("MessageBoard.Models.UserData", b =>
                 {
                     b.Property<string>("Id")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<string>("Account")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("AuthCode")
-                        .IsRequired()
-                        .HasColumnType("char(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("varchar(MAX)");
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Members");
+                    b.ToTable("UserDatas");
                 });
 
             modelBuilder.Entity("MessageBoard.Models.Guestbook", b =>
                 {
-                    b.HasOne("MessageBoard.Models.Member", "Member")
-                        .WithMany("Guestbooks")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("MessageBoard.Models.UserData", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
 
-                    b.Navigation("Member");
-                });
+                    b.HasOne("MessageBoard.Models.UserData", "Updater")
+                        .WithMany()
+                        .HasForeignKey("UpdaterId");
 
-            modelBuilder.Entity("MessageBoard.Models.Member", b =>
-                {
-                    b.Navigation("Guestbooks");
+                    b.Navigation("Creator");
+
+                    b.Navigation("Updater");
                 });
 #pragma warning restore 612, 618
         }

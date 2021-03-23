@@ -80,7 +80,7 @@ namespace MessageBoard.Controllers
                     throw new Exception("使用者資料錯誤，請重新登入！");
                 }
 
-                newData.MemberId = this.UserId;
+                newData.CreatorId = this.UserId;
                 _GuestbookService.InsertGuestbook(newData);
 
                 NotificationsHelper.AddNotification(new NotificationsHelper.Notification { Message = "留言建立成功" });
@@ -96,7 +96,7 @@ namespace MessageBoard.Controllers
         {
             var entity = _GuestbookService.GetDataById(id);
 
-            if (entity.MemberId != this.UserId)
+            if (entity.CreatorId != this.UserId)
             {
                 StatusMessageHelper.AddMessage(message: "您無法修改此留言！", contentType: StatusMessageHelper.ContentType.Danger);
                 return RedirectToAction(nameof(Index));
@@ -112,6 +112,7 @@ namespace MessageBoard.Controllers
             if (_GuestbookService.CheckUpdate(id))
             {
                 updateData.Id = id;
+                updateData.UpdaterId = this.UserId;
 
                 _GuestbookService.UpdateGuestbook(updateData);
             }
@@ -133,6 +134,7 @@ namespace MessageBoard.Controllers
             if (_GuestbookService.CheckUpdate(id))
             {
                 replyData.Id = id;
+                replyData.ReplierId = this.UserId;
 
                 _GuestbookService.ReplyGuestbook(replyData);
             }
@@ -144,7 +146,7 @@ namespace MessageBoard.Controllers
         {
             var entity = _GuestbookService.GetDataById(id);
 
-            if (entity.MemberId != this.UserId)
+            if (entity.CreatorId != this.UserId)
             {
                 StatusMessageHelper.AddMessage(message: "您無法刪除此留言！", contentType: StatusMessageHelper.ContentType.Danger);
                 return RedirectToAction(nameof(Index));

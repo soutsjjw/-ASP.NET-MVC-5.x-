@@ -16,13 +16,16 @@
                 #
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.DataList.First().Member.Name)
+                @Html.DisplayNameFor(model => model.DataList.First().Creator.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DataList.First().CreateTime)
             </th>
             <th scope="col">
                 @Html.DisplayNameFor(model => model.DataList.First().Content)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.DataList.First().Replier.Name)
             </th>
             <th scope="col">
                 @Html.DisplayNameFor(model => model.DataList.First().Reply)
@@ -37,24 +40,31 @@
         @foreach (var item in Model.DataList)
         {
             rowIndex++;
-            canEditOrDelete = item.MemberId == ViewBag.UserId;
+            canEditOrDelete = item.CreatorId == ViewBag.UserId;
             canReply = !canEditOrDelete;
             <tr>
                 <th scope="row">@rowIndex</th>
                 <td>
-                    @item.Member.Name
+                    @item.Creator.Name
                 </td>
                 <td>
-                    @item.CreateTime
+                    <div class="moment">
+                        @item.CreateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                    </div>
                 </td>
                 <td>
                     @item.Content
                 </td>
                 <td>
+                    @item.Replier?.Name
+                </td>
+                <td>
                     @item.Reply
                 </td>
                 <td>
-                    @item.ReplyTime
+                    <div class="moment">
+                        @item.ReplyTime?.ToString("yyyy/MM/dd HH:mm:ss")
+                    </div>
                 </td>
                 <td>
                     @if (canEditOrDelete)

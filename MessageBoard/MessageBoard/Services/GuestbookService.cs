@@ -32,7 +32,7 @@ namespace MessageBoard.Services
             else
             {
                 return _guestbookRepository
-                    .Get(x => x.Member.Name.Contains(search) || x.Content.Contains(search) || (!string.IsNullOrWhiteSpace(x.Reply) && x.Reply.Contains(search)), null, nameof(Member))
+                    .Get(x => x.Creator.Name.Contains(search) || x.Updater.Name.Contains(search) || x.Content.Contains(search) || (!string.IsNullOrWhiteSpace(x.Reply) && x.Reply.Contains(search)), null, nameof(ApplicationUser))
                     .ToList();
             }
         }
@@ -66,6 +66,8 @@ namespace MessageBoard.Services
             var entity = GetDataById(updateData.Id);
 
             entity.Content = updateData.Content;
+            entity.UpdaterId = updateData.UpdaterId;
+            entity.UpdateTime = DateTime.Now;
 
             _guestbookRepository.Update(entity);
             _unitOfWork.Commit();
@@ -77,6 +79,7 @@ namespace MessageBoard.Services
 
             entity.Reply = replyData.Reply;
             entity.ReplyTime = DateTime.Now;
+            entity.ReplierId = replyData.ReplierId;
 
             _guestbookRepository.Update(entity);
             _unitOfWork.Commit();

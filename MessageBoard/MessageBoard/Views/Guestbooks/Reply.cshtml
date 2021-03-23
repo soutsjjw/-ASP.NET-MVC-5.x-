@@ -3,21 +3,21 @@
     ViewBag.Title = "回覆留言";
 }
 
-<form id="EditForm" asp-action="Reply" method="post">
+<form id="EditForm" asp-action="Reply" method="post" autocomplete="off">
 
     <h3>回覆留言</h3>
 
     @if (Model.ReplyTime.HasValue)
     {
         <table class="table">
-            <tr>
+            @*<tr>
                 <td>
-                    <label asp-for="@Model.Member.Name"></label>
+                    <label asp-for="@Model.Creator.Name"></label>
                 </td>
                 <td>
-                    <input type="text" class="form-control" asp-for="@Model.Member.Name" readonly="@(true)" />
+                    <input type="text" class="form-control" asp-for="@Model.Creator.Name" readonly="@(true)" />
                 </td>
-            </tr>
+            </tr>*@
             <tr>
                 <td>
                     <label asp-for="Content"></label>
@@ -41,14 +41,14 @@
     else
     {
         <table class="table">
-            <tr>
+            @*<tr>
                 <td>
-                    <label asp-for="@Model.Member.Name"></label>
+                    <label asp-for="@Model.Creator.Name"></label>
                 </td>
                 <td>
-                    <input type="text" class="form-control" asp-for="@Model.Member.Name" readonly="@(true)" />
+                    <input type="text" class="form-control" asp-for="@Model.Creator.Name" readonly="@(true)" />
                 </td>
-            </tr>
+            </tr>*@
             <tr>
                 <td>
                     <label asp-for="Content"></label>

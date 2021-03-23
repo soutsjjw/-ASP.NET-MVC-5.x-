@@ -17,22 +17,12 @@ namespace MessageBoard.Data
         }
 
         public DbSet<Guestbook> Guestbooks { get; set; }
-        public DbSet<Member> Members { get; set; }
+        public DbSet<UserData> UserDatas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfiguration).Assembly);
-
-            //modelBuilder.Entity<Member>()
-            //    .HasMany(c => c.Guestbooks)
-            //    .WithOne(e => e.Member)
-            //    .IsRequired();
-
-            modelBuilder.Entity<Guestbook>()
-                .HasOne<Member>(x => x.Member)
-                .WithMany(x => x.Guestbooks)
-                .HasForeignKey(x => x.MemberId)
-                .IsRequired();
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(GuestbookConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserDataConfiguration).Assembly);
 
             base.OnModelCreating(modelBuilder);
         }

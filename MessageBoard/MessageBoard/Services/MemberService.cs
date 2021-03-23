@@ -15,50 +15,52 @@ namespace MessageBoard.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IMemberRepository _memberRepository;
         private readonly ILogger<MemberService> _logger;
 
         public MemberService(IUnitOfWork unitOfWork,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<MemberService> logger,
-            IMemberRepository memberRepository) : base(unitOfWork)
+            ILogger<MemberService> logger) : base(unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _memberRepository = memberRepository;
         }
 
-        public async Task<IdentityResult> RegisterAsync(Member newMember, string password)
+        public async Task<IdentityResult> RegisterAsync(ApplicationUser newMember, string password)
         {
-            if (AccountCheckAsync(newMember.Account).Result)
+            if (AccountCheckAsync(newMember.UserName).Result)
             {
-                var user = new ApplicationUser { UserName = newMember.Account, Email = newMember.Email, Name = newMember.Name };
-                var result = await _userManager.CreateAsync(user, password);
+                var result = await _userManager.CreateAsync(newMember, password);
 
                 return result;
             }
             else
             {
-                _logger.LogWarning("嘗試註冊的帳號已有註冊資料", new { newMember.Account });
+                _logger.LogWarning("嘗試註冊的帳號已有註冊資料", new { newMember.UserName });
                 throw new Exception("註冊帳號發生錯誤！");
             }
         }
 
-        public Member GetDataByAccount(string Account)
+        public ApplicationUser GetDataByAccount(string userName)
         {
-            return _memberRepository.Get(x => x.Account.Equals(Account)).FirstOrDefault();
+            var result = _userManager.FindByNameAsync(userName);
+            result.Wait();
+
+            return result.Result;
         }
 
-        public Member GetDataById(string Id)
+        public ApplicationUser GetDataById(string Id)
         {
-            return _memberRepository.Get(x => x.Id.Equals(Id)).FirstOrDefault();
+            var result = _userManager.FindByIdAsync(Id);
+            result.Wait();
+
+            return result.Result;
         }
 
-        public async Task<bool> AccountCheckAsync(string account)
+        public async Task<bool> AccountCheckAsync(string userName)
         {
-            var applicationuser = await _userManager.FindByNameAsync(account);
+            var applicationuser = await _userManager.FindByNameAsync(userName);
 
             return applicationuser == null;
         }
@@ -123,7 +125,7 @@ namespace MessageBoard.Services
         public string GetRole(string Account)
         {
             string role = "User";
-            Member loginMember = GetDataByAccount(Account);
+            var loginMember = GetDataByAccount(Account);
             if (loginMember.IsAdmin)
             {
                 role += ",Admin";

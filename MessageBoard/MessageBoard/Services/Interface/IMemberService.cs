@@ -11,28 +11,28 @@ namespace MessageBoard.Services.Interface
         /// </summary>
         /// <param name="newMember"></param>
         /// <param name="password"></param>
-        public Task<IdentityResult> RegisterAsync(Member newMember, string password);
+        public Task<IdentityResult> RegisterAsync(ApplicationUser newMember, string password);
 
         /// <summary>
         /// 藉由帳號取得單筆資料
         /// </summary>
         /// <param name="Account"></param>
         /// <returns></returns>
-        public Member GetDataByAccount(string Account);
+        public ApplicationUser GetDataByAccount(string Account);
 
         /// <summary>
         /// 藉由Id取得單筆資料
         /// </summary>
         /// <param name="Account"></param>
         /// <returns></returns>
-        public Member GetDataById(string Id);
+        public ApplicationUser GetDataById(string Id);
 
         /// <summary>
         /// 確認要註冊帳號是否有被註冊過
         /// </summary>
         /// <param name="Account"></param>
         /// <returns></returns>
-        public Task<bool> AccountCheckAsync(string Account);
+        public Task<bool> AccountCheckAsync(string userName);
 
         /// <summary>
         /// 信箱驗證碼驗證

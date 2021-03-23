@@ -43,7 +43,7 @@ namespace MessageBoard.Repositories
 
         public override IQueryable<Guestbook> GetAll()
         {
-            return _dbSet.Include(x => x.Member);
+            return _dbSet.Include(x => x.Creator).Include(x => x.Updater).Include(x => x.Replier);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MessageBoard.Helpers;
+﻿using AutoMapper;
+using MessageBoard.Helpers;
 using MessageBoard.Models;
 using MessageBoard.Services.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,13 +21,15 @@ namespace MessageBoard.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMapper _mapper;
         private readonly Models.WebConfig _webConfig;
         private readonly IMemberService _memberService;
         private readonly IMailService _mailService;
         private readonly IJwtService _jwtService;
 
         public MembersController(SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
+            IMapper mapper,
             Models.WebConfig webConfig,
             IMemberService MemberService,
             IMailService MailService,
@@ -34,6 +37,7 @@ namespace MessageBoard.Controllers
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _mapper = mapper;
             _webConfig = webConfig;
             _memberService = MemberService;
             _mailService = MailService;
@@ -57,11 +61,12 @@ namespace MessageBoard.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _memberService.RegisterAsync(registerMember.newMember, registerMember.Password);
+                var newMember = _mapper.Map<ApplicationUser>(registerMember);
+
+                var result = await _memberService.RegisterAsync(newMember, registerMember.Password);
                 if (result.Succeeded)
                 {
-                    var user = new ApplicationUser { UserName = registerMember.newMember.Account, Email = registerMember.newMember.Email, Name = registerMember.newMember.Name };
-                    var authCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var authCode = await _userManager.GenerateEmailConfirmationTokenAsync(newMember);
                     authCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(authCode));
                     string tempMail = System.IO.File.ReadAllText("Views/Shared/RegisterEmailTemplate.html");
                     UriBuilder validateUrl = new UriBuilder("http", "localhost", Request.Host.Port ?? 5000)
@@ -69,14 +74,14 @@ namespace MessageBoard.Controllers
                         Path = Url.Action("EmailValidate", "Members",
                         new
                         {
-                            Account = registerMember.newMember.Account,
+                            Account = newMember.UserName,
                             AuthCode = authCode
                         })
                     };
                     string mailBody = _mailService.GetRegiesterMailBody(tempMail,
-                        registerMember.newMember.Name,
+                        newMember.Name,
                         validateUrl.ToString().Replace("%3F", "?"));
-                    await _mailService.SendRegisterMailAsync(mailBody, registerMember.newMember.Email);
+                    await _mailService.SendRegisterMailAsync(mailBody, newMember.Email);
 
                     StatusMessageHelper.AddMessage(message: "註冊成功，請去收信進行Email驗證");
 
@@ -104,7 +109,7 @@ namespace MessageBoard.Controllers
 
         public IActionResult AccountCheck(ViewModels.Members.Register registerMember)
         {
-            return Json(_memberService.AccountCheckAsync(registerMember.newMember.Account));
+            return Json(_memberService.AccountCheckAsync(registerMember.Account));
         }
 
         public IActionResult EmailValidate(string account, string authCode)

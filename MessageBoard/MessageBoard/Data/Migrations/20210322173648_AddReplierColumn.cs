@@ -2,43 +2,42 @@
 
 namespace MessageBoard.Data.Migrations
 {
-    public partial class MemberWithGuestbookRelationship : Migration
+    public partial class AddReplierColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "MemberId",
+                name: "ReplierId",
                 table: "Guestbooks",
-                type: "nvarchar(25)",
-                nullable: false,
-                defaultValue: "");
+                type: "nvarchar(450)",
+                nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Guestbooks_MemberId",
+                name: "IX_Guestbooks_ReplierId",
                 table: "Guestbooks",
-                column: "MemberId");
+                column: "ReplierId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Guestbooks_Members_MemberId",
+                name: "FK_Guestbooks_UserDatas_ReplierId",
                 table: "Guestbooks",
-                column: "MemberId",
-                principalTable: "Members",
+                column: "ReplierId",
+                principalTable: "UserDatas",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Guestbooks_Members_MemberId",
+                name: "FK_Guestbooks_UserDatas_ReplierId",
                 table: "Guestbooks");
 
             migrationBuilder.DropIndex(
-                name: "IX_Guestbooks_MemberId",
+                name: "IX_Guestbooks_ReplierId",
                 table: "Guestbooks");
 
             migrationBuilder.DropColumn(
-                name: "MemberId",
+                name: "ReplierId",
                 table: "Guestbooks");
         }
     }

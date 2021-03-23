@@ -74,7 +74,6 @@ namespace MessageBoard
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGuestbookRepository, GuestbookRepository>();
-            services.AddScoped<IMemberRepository, MemberRepository>();
 
             services.AddScoped<IGuestbookService, GuestbookService>();
             services.AddScoped<IMemberService, MemberService>();

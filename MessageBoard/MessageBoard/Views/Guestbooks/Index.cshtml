@@ -54,6 +54,8 @@ else
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
     <script src="~/lib/toastr/build/toastr.min.js"></script>
+    <script src="~/lib/moment/moment.js"></script>
+    <script src="~/lib/moment/moment-with-locales.js"></script>
     <script>
         $(document).ready(function () {
             $('#CreateForm').ajaxForm({
@@ -78,6 +80,14 @@ else
                 });
             }
             interceptPaging();
+
+            moment.locale('zh-tw');
+            $(".moment").each(function () {
+                var $this = $(this);
+                var result = moment($this.text(), "YYYY/MM/DD HH:mm:ss").fromNow();
+                if (result !== 'Invalid date')
+                    $this.text(result);
+            })
         });
     </script>
     @Html.Raw(MessageBoard.Helpers.NotificationsHelper.RenderNotifications())
