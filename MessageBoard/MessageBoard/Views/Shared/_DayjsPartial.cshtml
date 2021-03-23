@@ -1,0 +1,23 @@
+﻿<script src="~/lib/dayjs/dayjs.min.js"></script>
+<script src="~/lib/dayjs/plugin/relativeTime.js"></script>
+<script src="~/lib/dayjs/locale/zh-tw.js"></script>
+<script>
+    $(function () {
+        dayjs.locale('zh-tw');
+        dayjs.extend(dayjs_plugin_relativeTime);
+        $(".dayjs").each(function () {
+            var $this = $(this);
+            if (!isNullOrWhitespace($this.text())) {
+                var result = dayjs($this.text()).fromNow();
+                var origin = $this.text();
+                if (result !== 'Invalid date')
+                    $this.text(result);
+
+                $this.attr('data-placement', 'right');
+                $this.attr('title', origin);
+                $this.tooltip();
+                $this.css('display', 'inline-flex');
+            }
+        });
+    });
+</script>

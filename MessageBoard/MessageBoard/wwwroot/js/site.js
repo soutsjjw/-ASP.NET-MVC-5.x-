@@ -1,8 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-$(function () {
+﻿$(function () {
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -21,7 +17,17 @@ $(function () {
         "hideMethod": "fadeOut"
     }
 
-    $(".alert").delay(4000).slideUp(200, function () {
-        $(this).alert('close');
+    $(".alert").each(function () {
+        var $this = $(this);
+        if (!$(this).hasClass('keep')) {
+            $this.delay(4000).slideUp(200, function () {
+                $(this).alert('close');
+            })
+        }
     });
 });
+
+function isNullOrWhitespace(input) {
+    if (typeof input === 'undefined' || input == null) return true;
+    return input.replace(/\s/g, '').length < 1;
+}

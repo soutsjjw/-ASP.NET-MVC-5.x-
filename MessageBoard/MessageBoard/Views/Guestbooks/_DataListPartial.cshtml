@@ -16,7 +16,7 @@
                 #
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.DataList.First().Creator.Name)
+                建立人員
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DataList.First().CreateTime)
@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.DataList.First().Content)
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.DataList.First().Replier.Name)
+                回覆人員
             </th>
             <th scope="col">
                 @Html.DisplayNameFor(model => model.DataList.First().Reply)
@@ -48,8 +48,8 @@
                     @item.Creator.Name
                 </td>
                 <td>
-                    <div class="moment">
-                        @item.CreateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                    <div class="dayjs">
+                        @item.CreateTime.ToString(_webConfig.DateTimeFormat.DateTime)
                     </div>
                 </td>
                 <td>
@@ -62,8 +62,8 @@
                     @item.Reply
                 </td>
                 <td>
-                    <div class="moment">
-                        @item.ReplyTime?.ToString("yyyy/MM/dd HH:mm:ss")
+                    <div class="dayjs">
+                        @item.ReplyTime?.ToString(_webConfig.DateTimeFormat.DateTime)
                     </div>
                 </td>
                 <td>

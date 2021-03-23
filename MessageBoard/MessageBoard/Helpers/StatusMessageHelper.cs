@@ -43,8 +43,8 @@ namespace MessageBoard.Helpers
                 contentTitle = string.IsNullOrWhiteSpace(alert.Title) ? "" : contentTitle;
 
                 alertContent += $@"
-<div class='alert alert-{contentType} alert-dismissible' role='alert'>
-    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>
+<div class='alert alert-{contentType}{(alert.Dismissible ? " alert-dismissible" : "")}{(alert.Keep ? " " + nameof(alert.Keep).ToLower() : "")}' role='alert'>
+    {(alert.Dismissible ? "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>" : "")}
     {contentTitle}
     {alert.Message}
 </div>";
@@ -61,13 +61,15 @@ namespace MessageBoard.Helpers
             HttpContextHelper.Current.Session.Remove(nameof(StatusMessage));
         }
 
-        public static void AddMessage(string title = "", string message = "", ContentType contentType = ContentType.Success)
+        public static void AddMessage(string title = "", string message = "", ContentType contentType = ContentType.Success, bool dismissible = true, bool keep = false)
         {
             var content = new Content()
             {
                 Message = message,
                 ContentType = contentType,
-                Title = title
+                Title = title,
+                Dismissible = dismissible,
+                Keep = keep
             };
             AddMessage(content);
         }
@@ -110,6 +112,8 @@ namespace MessageBoard.Helpers
             public string Message { get; set; }
             public ContentType ContentType { get; set; } = ContentType.Success;
             public string Title { get; set; }
+            public bool Dismissible { get; set; } = true;
+            public bool Keep { get; set; } = false;
         }
     }
 }

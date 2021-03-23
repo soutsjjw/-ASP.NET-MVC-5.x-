@@ -83,7 +83,7 @@ namespace MessageBoard.Controllers
                         validateUrl.ToString().Replace("%3F", "?"));
                     await _mailService.SendRegisterMailAsync(mailBody, newMember.Email);
 
-                    StatusMessageHelper.AddMessage(message: "註冊成功，請去收信進行Email驗證");
+                    StatusMessageHelper.AddMessage(message: "註冊成功，請去收信進行Email驗證", dismissible: false, keep: true);
 
                     return RedirectToAction("RegisterResult");
                 }
@@ -120,7 +120,7 @@ namespace MessageBoard.Controllers
             }
             
             var blPass = _memberService.EmailValidate(account, authCode, out string message);
-            StatusMessageHelper.AddMessage(message: message, contentType: blPass ? StatusMessageHelper.ContentType.Success : StatusMessageHelper.ContentType.Danger);
+            StatusMessageHelper.AddMessage(message: message, contentType: blPass ? StatusMessageHelper.ContentType.Success : StatusMessageHelper.ContentType.Danger, dismissible: false, keep: true);
 
             return View();
         }

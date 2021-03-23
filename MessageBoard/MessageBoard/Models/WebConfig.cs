@@ -7,11 +7,13 @@
             Pagination = new PaginationContent();
             MailServer = new MailServerContent();
             Jwt = new JwtContent();
+            DateTimeFormat = new DateTimeFormatContent();
         }
 
         public PaginationContent Pagination { get; set; }
         public MailServerContent MailServer { get; set; }
         public JwtContent Jwt { get; set; }
+        public DateTimeFormatContent DateTimeFormat { get; set; }
 
         public class PaginationContent
         {
@@ -34,6 +36,13 @@
             public string SecretKey { get; set; }
             public int ExpireMinutes { get; set; }
             public string CookieName { get; set; }
+        }
+
+        public class DateTimeFormatContent
+        {
+            public string DateTime { get; set; }
+            public string Date { get; set; }
+            public string Time { get; set; }
         }
     }
 }

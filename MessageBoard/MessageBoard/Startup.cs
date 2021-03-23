@@ -183,7 +183,6 @@ namespace MessageBoard
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            /*
             app.UseStatusCodePages(context =>
             {
                 var request = context.HttpContext.Request;
@@ -197,7 +196,6 @@ namespace MessageBoard
 
                 return Task.CompletedTask;
             });
-            */
 
             app.UseStaticFiles();
 

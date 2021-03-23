@@ -39,11 +39,24 @@
 }
 else
 {
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger keep" role="alert">
         資料庫內查無資料
     </div>
 }
 <a id="result"></a>
+
+<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+    Tooltip on top
+</button>
+<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
+    Tooltip on right
+</button>
+<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">
+    Tooltip on bottom
+</button>
+<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+    Tooltip on left
+</button>
 
 @section Style {
     <link rel="stylesheet" href="~/lib/toastr/build/toastr.min.css" />
@@ -54,8 +67,7 @@ else
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
     <script src="~/lib/toastr/build/toastr.min.js"></script>
-    <script src="~/lib/moment/moment.js"></script>
-    <script src="~/lib/moment/moment-with-locales.js"></script>
+    <partial name="_DayjsPartial" />
     <script>
         $(document).ready(function () {
             $('#CreateForm').ajaxForm({
@@ -80,14 +92,6 @@ else
                 });
             }
             interceptPaging();
-
-            moment.locale('zh-tw');
-            $(".moment").each(function () {
-                var $this = $(this);
-                var result = moment($this.text(), "YYYY/MM/DD HH:mm:ss").fromNow();
-                if (result !== 'Invalid date')
-                    $this.text(result);
-            })
         });
     </script>
     @Html.Raw(MessageBoard.Helpers.NotificationsHelper.RenderNotifications())
